@@ -1,0 +1,33 @@
+services:
+  kiro2cc:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      # Mount AWS SSO cache directory for token access
+      # Adjust the path according to your local environment
+      - ~/.aws/sso/cache:/root/.aws/sso/cache:ro
+    environment:
+      # Optional: Set custom port
+      - KIRO_PORT=8080
+    restart: unless-stopped
+    networks:
+      - kiro-network
+
+  # Optional: For development with custom port
+  kiro2cc-dev:
+    build: .
+    ports:
+      - "9000:9000"
+    volumes:
+      - ~/.aws/sso/cache:/root/.aws/sso/cache:ro
+    command: ["/kiro2cc", "server", "9000"]
+    restart: unless-stopped
+    networks:
+      - kiro-network
+    profiles:
+      - dev
+
+networks:
+  kiro-network:
+    driver: bridge

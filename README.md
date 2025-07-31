@@ -32,6 +32,7 @@
 
 
 这是一个Go命令行工具，用于管理Kiro认证token和提供Anthropic API代理服务。
+
 ### Claude Code
 <img width="1920" height="1040" alt="image" src="https://github.com/user-attachments/assets/25f02026-f316-4a27-831c-6bc28cb03fca" />
 
@@ -50,6 +51,69 @@
 ```bash
 go build -o kiro2cc main.go
 ```
+
+## Docker 使用
+
+### 构建Docker镜像
+
+```bash
+docker build -t kiro2cc .
+```
+
+### 运行Docker容器
+
+#### 启动代理服务器
+```bash
+# 使用默认端口8080
+docker run -d -p 8080:8080 \
+  -v ~/.aws/sso/cache:/root/.aws/sso/cache:ro \
+  --name kiro2cc-server \
+  kiro2cc
+
+# 使用自定义端口9000
+docker run -d -p 9000:9000 \
+  -v ~/.aws/sso/cache:/root/.aws/sso/cache:ro \
+  --name kiro2cc-server-9000 \
+  kiro2cc /kiro2cc server 9000
+```
+
+#### 使用其他命令
+```bash
+# 读取token信息
+docker run --rm \
+  -v ~/.aws/sso/cache:/root/.aws/sso/cache:ro \
+  kiro2cc /kiro2cc read
+
+# 刷新token
+docker run --rm \
+  -v ~/.aws/sso/cache:/root/.aws/sso/cache \
+  kiro2cc /kiro2cc refresh
+
+# 导出环境变量
+docker run --rm \
+  -v ~/.aws/sso/cache:/root/.aws/sso/cache:ro \
+  kiro2cc /kiro2cc export
+```
+
+### 使用Docker Compose
+
+```bash
+# 启动服务
+docker-compose up -d
+
+# 查看日志
+docker-compose logs -f
+
+# 停止服务
+docker-compose down
+```
+
+### Docker镜像特性
+
+- **多阶段构建**: 使用Go官方镜像编译，最终镜像基于scratch，大小仅约9MB
+- **安全性**: 包含必要的CA证书用于HTTPS请求
+- **轻量级**: 最小化镜像，只包含必要的二进制文件
+- **跨平台**: 支持linux/amd64架构
 
 ## 自动构建
 
