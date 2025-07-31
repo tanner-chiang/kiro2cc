@@ -1,3 +1,7 @@
 *.exe
 
 *response.raw
+
+# Docker artifacts
+*.tar
+.docker

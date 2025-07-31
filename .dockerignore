@@ -1,0 +1,21 @@
+# Exclude git files
+.git
+.github
+.gitignore
+
+# Exclude development files
+.vscode
+*.md
+build.bat
+
+# Exclude build artifacts
+kiro2cc
+*.exe
+*response.raw
+
+# Exclude test files
+*_test.go
+
+# Exclude Docker files (avoid recursion)
+Dockerfile
+.dockerignore

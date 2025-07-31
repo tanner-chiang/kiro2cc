@@ -51,12 +51,44 @@
 go build -o kiro2cc main.go
 ```
 
+## Docker
+
+### 使用预构建的Docker镜像
+
+```bash
+# 从GitHub Container Registry拉取最新镜像
+docker pull ghcr.io/tanner-chiang/kiro2cc:latest
+
+# 启动服务器（需要挂载token文件）
+docker run -p 8080:8080 \
+  -v ~/.aws/sso/cache:/home/appuser/.aws/sso/cache:ro \
+  ghcr.io/tanner-chiang/kiro2cc:latest server
+
+# 运行其他命令
+docker run --rm \
+  -v ~/.aws/sso/cache:/home/appuser/.aws/sso/cache \
+  ghcr.io/tanner-chiang/kiro2cc:latest read
+```
+
+### 本地构建Docker镜像
+
+```bash
+# 构建镜像
+docker build -t kiro2cc .
+
+# 运行容器
+docker run -p 8080:8080 \
+  -v ~/.aws/sso/cache:/home/appuser/.aws/sso/cache:ro \
+  kiro2cc server
+```
+
 ## 自动构建
 
 本项目使用GitHub Actions进行自动构建：
 
--   当创建新的GitHub Release时，会自动构建Windows、Linux和macOS版本的可执行文件并上传到Release页面
--   当推送代码到main分支或创建Pull Request时，会自动运行测试
+-   **Release构建**: 当创建新的GitHub Release时，会自动构建Windows、Linux和macOS版本的可执行文件并上传到Release页面
+-   **Docker镜像**: 当推送代码到main分支时，会自动构建并发布Docker镜像到GitHub Container Registry
+-   **测试**: 当推送代码到main分支或创建Pull Request时，会自动运行测试
 
 ## 使用方法
 
